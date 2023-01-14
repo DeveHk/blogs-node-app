@@ -115,6 +115,7 @@ const delet = (req, res) => {
 //INDEX
 app.get('/blog/:id', index)
 app.get('/blog', indexAll)
+
 //CREATE POST
 app.post('/blog', create)
 
