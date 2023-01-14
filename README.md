@@ -25,3 +25,5 @@ Authentication generated JWT token which will be used for authorization
 | PATCH | /blog/:id |    Update blog |
 | DELETE | /blog:id |    Delete blog |
 > All requestes must have `authorisation : Bearer 'token' ` to get authorized
+> Server files are in Server Folder of this repository
+> Front End will be created soon
