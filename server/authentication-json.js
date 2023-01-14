@@ -3,48 +3,46 @@ const app = express()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 require('dotenv').config()
-
-//--------Data
-const users = []
+const fs = require('fs')
 
 //-----Middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.listen(5001)
-//return the user authorizing the tocken
-const authenticateTocken=(req,res,nex)=>{
-    const authHeader = req.headers['authorisation']
-    const tocken=authHeader && authHeader.split(' ')[1]
-    if(tocken==null) return res.status(401).sned()
-
-    jwt.verify(tocken,process.env.ACCESS_TOKEN_SECRET, (err,user)=>{
-        if(err) return res.status(403).send(err)
-        req.user=user
-        nex()
-    })
-}
 
 //------Functions
+const checkUser=(us)=>{
+    let index= fs.readFileSync('./blogs/index.json')
+    index=JSON.parse(index)
+    const user = index.find(u => u.user == us)
+    return {index,user}
+}
 const authenticate_create = async (req, res) => {
-    const user = users.find(user => user.name == req.body.user)
+
+    let {index,user}=checkUser(req.body.user)
     if (user)
         res.status(400).send("user already exists")
     else {
         //authenticate user first
         try {
             const hashedPass = await bcrypt.hash(req.body.password, 10)
-            const user = { name: req.body.user, password: hashedPass }
-            users.push(user)
+            const user = { user: req.body.user, password: hashedPass, blogs:[] }
+            fs.mkdirSync(`./blogs/${user.user}`)
+            index.push(user)
+            fs.writeFileSync("./blogs/index.json",JSON.stringify(index, null , 2),'utf8')
             res.status(201).send()
         }
-        catch {
+        catch(err) {
+            console.log(err)//*
             res.status(500).send()
         }
     }
 }
 
 const authenticate_login = async (req, res) => {
-    const user = users.find(user => user.name == req.body.user)
+    //check if user exists
+    let {user}=checkUser(req.body.user)
+
     if (user) {
         try {
             if (await bcrypt.compare(req.body.password, user.password)) {
@@ -80,7 +78,7 @@ app.post('/login', authenticate_login)
 app.get('/user', user)
 
 ////////////////////////////////////////////////////////////////DUMMY
-const post=[{
+/*const post=[{
     user:'user',
     title:'trinity',
     body:'brandided'
@@ -94,4 +92,4 @@ const post=[{
 app.get('/post',authenticateTocken,(req,res)=>{
     console.log(req.user)
     res.json(post.filter(post=>post.user==req.user.name))
-})
+})*/

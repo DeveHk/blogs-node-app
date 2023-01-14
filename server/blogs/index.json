@@ -1,4 +1,17 @@
 [
-  "123",
-  "1lvc0hvclcvs0tkf"
+  {
+    "user": "user",
+    "password": "admin",
+    "blogs": [
+      "123",
+      "1lvc0hvclcvs0tkf"
+    ]
+  },
+  {
+    "user": "Harsh",
+    "password": "$2b$10$dxmodSRgj9KBvnjUsVpqOOMPrzX0PZGotu6fYFdZ8I8qFvX5YFC5C",
+    "blogs": [
+      "1lvc0a8clcwfu7b8"
+    ]
+  }
 ]
